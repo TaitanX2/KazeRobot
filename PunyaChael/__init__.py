@@ -234,10 +234,14 @@ updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
 telethn = TelegramClient(MemorySession(), API_ID, API_HASH)
 dispatcher = updater.dispatcher
 print("[INFO]: INITIALIZING AIOHTTP SESSION")
-aiohttpsession = ClientSession()
-# ARQ Client
-print("[INFO]: INITIALIZING ARQ CLIENT")
-arq = ARQ(ARQ_API_URL, ARQ_API_KEY, aiohttpsession)
+async def initialize_sessions():
+    global aiohttpsession
+    aiohttpsession = ClientSession()
+    global arq
+    arq = ARQ(ARQ_API_URL, ARQ_API_KEY, aiohttpsession)
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(initialize_sessions())
 
 ubot2 = TelegramClient(StringSession(STRING_SESSION), API_ID, API_HASH)
 try:
